@@ -1,0 +1,20 @@
+ไฟล์นี้จะบอก Git ให้อัตโนมัติว่า "ห้าม" อัปโหลดไฟล์เหล่านี้
+
+(สำคัญมากสำหรับความปลอดภัยและลดขนาด Repository)
+
+1. Output ของ .NET
+
+[Bb]in/
+[Oo]bj/
+
+2. ไฟล์ User-specific ของ VS/VSCode
+
+*.suo
+*.user
+.vs/
+
+3. (!!!) ความลับ (!!!)
+
+ห้ามอัปโหลดไฟล์ตั้งค่า Development ที่มีรหัสผ่าน DB และ JWT Key
+
+appsettings.Development.json
