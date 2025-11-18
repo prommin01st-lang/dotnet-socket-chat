@@ -65,8 +65,41 @@
 
 ## 🚀 วิธีเริ่มต้นใช้งาน (Get Started)
 
-### 1️⃣ Clone Repository
+### 1.  Clone Repository
 
 ```bash
 git clone [YOUR_API_REPO_URL]
 cd [your-repo-name]
+```
+
+
+### 2. สร้างไฟล์ตั้งค่า (สำคัญมาก)
+- คัดลอกไฟล์ appsettings.Template.json
+
+- สร้างไฟล์ใหม่ชื่อ appsettings.Development.json
+
+- วางเนื้อหาจาก Template ลงไป
+
+### 3. แก้ไข appsettings.Development.json
+- เปลี่ยน ConnectionStrings:DefaultConnection ให้เป็น SQL Server ของคุณ
+    - (แนะนำ) เปลี่ยน JWT:Key เป็นค่า Secret ใหม่ (สุ่มใหม่)
+- แก้ไข JWT:Issuer (API URL) และ JWT:Audience (Frontend URL)
+
+### 4. สร้าง Database
+(ตรวจสอบว่า Connection String ถูกต้องแล้ว)
+
+```bash
+dotnet ef database update
+```
+
+### 5. รันโปรเจกต์
+
+```bash
+dotnet run
+```
+
+(API จะรันที่ (เช่น) http://localhost:5212)
+
+```bash
+dotnet run
+```
