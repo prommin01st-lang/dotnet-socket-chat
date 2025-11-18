@@ -1,30 +1,26 @@
 using ChatBackend.Data;
 using ChatBackend.Entities;
-using ChatBackend.Hubs; // (เราจะสร้างไฟล์ Hubs/ChatHub.cs ใน Phase 3)
-using ChatBackend.Services; // <-- (1) เพิ่ม using ที่ขาดไป
+using ChatBackend.Hubs;
+using ChatBackend.Services; // (สำหรับ ITokenService, IConversationService)
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ChatBackend.Models;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models; // (สำหรับ OpenApiInfo)
 using System.Text;
-using Microsoft.Extensions.Hosting; // <-- (1) เพิ่ม using ที่ขาดไป
-using Microsoft.Extensions.Logging; // <-- (1) เพิ่ม using ที่ขาดไป
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // --- 1. ตั้งค่า CORS ---
-// (จำเป็นสำหรับ Next.js และ SignalR)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextApp", policy =>
     {
-        policy.WithOrigins(configuration["JWT:Audience"]!) // ดึง URL มาจาก appsettings
+        policy.WithOrigins("http://localhost:3000") 
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // <-- สำคัญมากสำหรับ SignalR (และ Auth)
+              .AllowCredentials(); 
     });
 });
 
@@ -46,11 +42,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 6;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders(); // เพิ่ม Token Providers สำหรับ (เช่น reset password)
+.AddDefaultTokenProviders(); 
 
 
 // --- 4. ตั้งค่า Authentication (JWT) ---
-// (Phase 1, Step 5)
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -60,7 +55,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     options.SaveToken = true;
-    options.RequireHttpsMetadata = false; // (ตั้งเป็น true เมื่อ deploy จริง)
+    options.RequireHttpsMetadata = false; 
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
@@ -70,12 +65,10 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = configuration["JWT:Issuer"],
         ValidAudience = configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]!)),
-        // (สำคัญ) ตั้งค่า ClockSkew เป็น Zero เพื่อให้ Token หมดอายุตรงเวลา (ดีสำหรับการ Refresh)
         ClockSkew = TimeSpan.Zero 
     };
     
-    // (สำคัญ) นี่คือการตั้งค่าให้ SignalR อ่าน Token จาก Query String
-    // เพราะ WebSocket ไม่สามารถส่ง Auth Header ได้ตามปกติ
+    // ตั้งค่าให้ SignalR อ่าน Token จาก Query String
     options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
@@ -83,7 +76,7 @@ builder.Services.AddAuthentication(options =>
             var accessToken = context.Request.Query["access_token"];
             var path = context.HttpContext.Request.Path;
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/hubs"))) // จำกัดเฉพาะ Endpoint ของ Hub
+                (path.StartsWithSegments("/hubs"))) 
             {
                 context.Token = accessToken;
             }
@@ -96,17 +89,16 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // --- 6. ตั้งค่า SignalR (WebSocket) ---
-// (Phase 3, Step 3)
 builder.Services.AddSignalR();
 
-//  Addd TokenService ลงใน DI Container
+// --- 7. ลงทะเบียน Services (Dependency Injection) ---
 builder.Services.AddScoped<ITokenService, TokenService>();
-
+builder.Services.AddScoped<IConversationService, ConversationService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// (Optional) ตั้งค่า Swagger ให้รู้จัก JWT
+// --- 8. ตั้งค่า Swagger ให้รู้จัก JWT ---
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ChatBackend API", Version = "v1" });
@@ -140,6 +132,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// --- (ใหม่) เรียกใช้ SeedData (สร้าง Roles) ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -154,6 +147,8 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred seeding the DB.");
     }
 }
+// --- จบส่วน SeedData ---
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -162,21 +157,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// (*** FIX ***)
+// ปิดการใช้งาน HttpsRedirection ชั่วคราว (สำหรับ Development)
+// เพื่อแก้ Bug "Failed to determine the https port for redirect."
+// app.UseHttpsRedirection();
 
-// --- 7. ใช้งาน Middleware (ลำดับสำคัญมาก) ---
-app.UseRouting(); // ต้องมีก่อน UseCors และ UseAuthorization
+// --- ใช้งาน Middleware (ลำดับสำคัญมาก) ---
+app.UseRouting(); 
 
-app.UseCors("AllowNextApp"); // ใช้งาน CORS
+app.UseCors("AllowNextApp"); 
 
-app.UseAuthentication(); // ใช้งาน Authentication (ตรวจสอบ Token)
-app.UseAuthorization(); // ใช้งาน Authorization (ตรวจสอบ Role)
+app.UseAuthentication(); 
+app.UseAuthorization(); 
 
 app.MapControllers();
 
-// 8. Map SignalR Hub
-// (Phase 3, Step 3)
-// (เราต้องสร้างไฟล์ ChatHub.cs ในโฟลเดอร์ /Hubs/ ก่อน)
+// Map SignalR Hub
 app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

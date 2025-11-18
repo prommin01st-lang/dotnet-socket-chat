@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+// Namespace คือ .Entities
 namespace ChatBackend.Entities
 {
     /// <summary>
@@ -28,21 +29,21 @@ namespace ChatBackend.Entities
         /// FK ไปยัง ApplicationUser (ผู้ส่ง)
         /// </summary>
         [Required]
-        public required string SenderId { get; set; }
+        public required string SenderId { get; set; } 
 
         /// <summary>
         /// FK ไปยัง Conversation (ห้องแชท)
         /// </summary>
         [Required]
-        public Guid ConversationId { get; set; }
+        public required Guid ConversationId { get; set; } // <--- (ยืนยัน: 'required' ถูกต้องแล้ว)
 
 
         // --- Navigation Properties ---
 
         [ForeignKey("SenderId")]
-        public virtual ApplicationUser Sender { get; set; } = null!;
+        public virtual ApplicationUser Sender { get; set; } = null!; 
 
         [ForeignKey("ConversationId")]
-        public virtual Conversation Conversation { get; set; } = null!;
+        public virtual Conversation Conversation { get; set; } = null!; 
     }
 }

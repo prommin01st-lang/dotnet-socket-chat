@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+// Namespace คือ .Entities
 namespace ChatBackend.Entities
 {
     /// <summary>
@@ -15,7 +16,7 @@ namespace ChatBackend.Entities
         /// <summary>
         /// ประเภทของห้องแชท (OneToOne หรือ Group)
         /// </summary>
-        [Required]
+        [Required] // <--- (ยืนยัน: '[Required]' ถูกต้องแล้ว)
         public ConversationType Type { get; set; }
 
         /// <summary>
