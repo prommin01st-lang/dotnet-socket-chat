@@ -63,6 +63,35 @@
 
 ---
 
+## 🗺️ เส้นทาง API (Available Endpoints)
+
+### Authentication (`/api/accounts`)
+
+| Method | Endpoint | Protection | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/register` | Public | ลงทะเบียน User ใหม่ |
+| `POST` | `/login` | Public | เข้าสู่ระบบ (รับ Tokens) |
+| `POST` | `/refresh` | Public | ขอ Token ใหม่ (ใช้ Refresh Token) |
+| `POST` | `/revoke` | `[Authorize]` | ยกเลิก Refresh Token (สำหรับ Logout) |
+| `GET` | `/me` | `[Authorize]` | ดึงข้อมูล User (ที่ Login อยู่) |
+
+### Chat System (`/api/`)
+
+| Method | Endpoint | Protection | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/conversations` | `[Authorize]` | ดึง "รายชื่อห้องแชท" (Sidebar) |
+| `GET` | `/conversations/{id}/messages` | `[Authorize]` | ดึง "ข้อความเก่า" ในห้องแชท |
+| `POST` | `/conversations/onetoone/{userId}` | `[Authorize]` | "เริ่ม" แชท 1-1 (หรือค้นหาห้องเดิม) |
+| `POST` | `/messages` | `[Authorize]` | "ส่ง" ข้อความใหม่ (และ Push ผ่าน SignalR) |
+
+### WebSocket (`/hubs`)
+
+| Protocol | Endpoint | Protection | Description |
+| :--- | :--- | :--- | :--- |
+| `wss://` | `/hubs/chat` | `[Authorize]` (JWT) | เชื่อมต่อ Real-time (ต้องส่ง `access_token` ใน Query String) |
+
+---
+
 ## 🚀 วิธีเริ่มต้นใช้งาน (Get Started)
 
 ### 1.  Clone Repository
