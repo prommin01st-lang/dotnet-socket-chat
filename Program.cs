@@ -94,6 +94,7 @@ builder.Services.AddSignalR();
 // --- 7. ลงทะเบียน Services (Dependency Injection) ---
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
