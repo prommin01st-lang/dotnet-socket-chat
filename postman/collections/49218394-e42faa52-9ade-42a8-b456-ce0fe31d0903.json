@@ -1,0 +1,756 @@
+{
+	"info": {
+		"_postman_id": "49218394-e42faa52-9ade-42a8-b456-ce0fe31d0903",
+		"name": "Web Socket",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "register",
+					"id": "49218394-cfe3c743-1219-449b-b4b5-0c1f6f685311",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"Petanque@example.com\",\r\n  \"password\": \"Petanque123\",\r\n  \"firstName\": \"Prommin\",\r\n  \"lastName\": \"Chandet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{websocketURL}}/api/accounts/register",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "49218394-5b71ba47-908b-4bcc-8dcd-f9bd8d291121",
+							"name": "register Mayom@example.com",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"Mayom@example.com\",\r\n  \"password\": \"Mayom123\",\r\n  \"firstName\": \"Mayom\",\r\n  \"lastName\": \"Shit\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{websocketURL}}/api/accounts/register",
+									"host": [
+										"{{websocketURL}}"
+									],
+									"path": [
+										"api",
+										"accounts",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"responseTime": null,
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "login",
+					"id": "49218394-017a40af-003d-41a7-b100-77d2f039dbac",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"Petanque@example.com\",\r\n  \"password\": \"Petanque123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{websocketURL}}/api/accounts/login",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "49218394-c7e380e8-f228-4620-94b7-cccbaa04e363",
+							"name": "login Mayom@example.com",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"Mayom@example.com\",\r\n  \"password\": \"Mayom123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{websocketURL}}/api/accounts/login",
+									"host": [
+										"{{websocketURL}}"
+									],
+									"path": [
+										"api",
+										"accounts",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"responseTime": null,
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "refresh",
+					"id": "49218394-895dc832-0141-4ed0-a1d2-8fbd5832b654",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"accessToken\": \"eyJh... (Token เก่าที่หมดอายุ)\",\r\n  \"refreshToken\": \"paVoITykAU8... (Token ที่ยังไม่หมดอายุ)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{websocketURL}}/api/accounts/refresh",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"refresh"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "49218394-084a4aa6-082f-4dbd-82d6-68d04916bb75",
+							"name": "refresh",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiOGRlYjg2ZjEtOGFlNi00NzYzLWFkMTItNmNlMTllMzE0ZDdlIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMwOTcwOTksImV4cCI6MTc2MzA5Nzk5OSwiaWF0IjoxNzYzMDk3MDk5LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.Fh5WDhIIKwKVHFI_z3ISNZPBrfsFHnKwcmIOzcOpdg8\",\r\n  \"refreshToken\": \"e2UYXQ+/Xvyvb2lOCKZ8DpBL3JvnTAOlRHMm0smyl+4=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{websocketURL}}/api/accounts/refresh",
+									"host": [
+										"{{websocketURL}}"
+									],
+									"path": [
+										"api",
+										"accounts",
+										"refresh"
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"responseTime": null,
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "me [Who am I]",
+					"id": "49218394-841a8c40-395d-4ec0-bbcf-2aecdcfd7e15",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiMjIyODgwMTAtYTk5MC00YzRlLWIzY2ItNzQ5ZjNlNzk5MWM3Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMwMjkwMTksImV4cCI6MTc2MzAyOTkxOSwiaWF0IjoxNzYzMDI5MDE5LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.m1Jg6mB87IEqMTOCaI5ziWREQL5Wv82u0BRWjm0F8Ko",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/accounts/me",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revoke (logout)",
+					"id": "49218394-6aca1b52-035a-415f-a7c1-ae376573ea8d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiMTkwMWNiYTYtNDczMy00Y2JjLTlhYmQtMGNhZmUyNDMyMjVkIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMwOTcxMzcsImV4cCI6MTc2MzA5ODAzNywiaWF0IjoxNzYzMDk3MTM3LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.stEhkILM7xdN2Thxcm4k-Ih5rkraCj9S_BZAz_8Topg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/accounts/revoke",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"revoke"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49218394-7ea4da4a-637f-4d8e-9f5c-bb114bae2361"
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Message",
+					"item": [
+						{
+							"name": "Send Message",
+							"id": "49218394-48bd51ab-7280-4acf-b85b-7c59f2131a46",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiZjM5Nzg3ZjgtYTI2ZC00NDk4LTg0ZWQtZjRmODc2NzYwYjRiIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMzNTI3MjAsImV4cCI6MTc2MzM1MzYyMCwiaWF0IjoxNzYzMzUyNzIwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.pXtF3ko3xgzb9Br9DOaqxmuUnggddkdku4cdbu2ZdKM",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"conversationId\": \"072DCE4A-3B52-4417-95B0-AB538B865773\",\r\n  \"content\": \"สวัสดีครับ นี่คือข้อความทดสอบ\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{websocketURL}}/api/Messages",
+									"host": [
+										"{{websocketURL}}"
+									],
+									"path": [
+										"api",
+										"Messages"
+									]
+								}
+							},
+							"response": [
+								{
+									"id": "49218394-a6868a6b-11ef-4115-8a45-f51173e92cc9",
+									"name": "Petanque Send Message to Mayom",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"conversationId\": \"072DCE4A-3B52-4417-95B0-AB538B865773\",\r\n  \"content\": \"สวัสดีครับ นี่คือข้อความทดสอบ\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{websocketURL}}/api/Messages",
+											"host": [
+												"{{websocketURL}}"
+											],
+											"path": [
+												"api",
+												"Messages"
+											]
+										}
+									},
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"responseTime": null,
+									"body": null
+								}
+							]
+						}
+					],
+					"id": "49218394-07c539ea-da45-487b-8a3d-f45164ac010c"
+				},
+				{
+					"name": "Conversations",
+					"id": "49218394-8404f289-d36c-4950-8d40-045da1b348ae",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiZjM5Nzg3ZjgtYTI2ZC00NDk4LTg0ZWQtZjRmODc2NzYwYjRiIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMzNTI3MjAsImV4cCI6MTc2MzM1MzYyMCwiaWF0IjoxNzYzMzUyNzIwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.pXtF3ko3xgzb9Br9DOaqxmuUnggddkdku4cdbu2ZdKM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/Conversations",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"Conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Message in a Conversation",
+					"id": "49218394-05f02be9-8577-46c5-a832-057fb6a36f10",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiZjM5Nzg3ZjgtYTI2ZC00NDk4LTg0ZWQtZjRmODc2NzYwYjRiIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMzNTI3MjAsImV4cCI6MTc2MzM1MzYyMCwiaWF0IjoxNzYzMzUyNzIwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.pXtF3ko3xgzb9Br9DOaqxmuUnggddkdku4cdbu2ZdKM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/conversations/{conversationId}/messages",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"{conversationId}",
+								"messages"
+							]
+						}
+					},
+					"response": [
+						{
+							"id": "49218394-800dda48-c4d0-45f8-9b85-45e042d08ea4",
+							"name": "Message in a Conversation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{websocketURL}}/api/conversations/{id}/messages",
+									"host": [
+										"{{websocketURL}}"
+									],
+									"path": [
+										"api",
+										"conversations",
+										"{id}",
+										"messages"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"responseTime": null,
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Create First Message in a Conversation",
+					"id": "49218394-b6027eb1-66f2-4b57-9612-8f4805d7b939",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyZDI3MzU3Ny1lMDM3LTQyZjItYmJhZi0zOGI2YzhmMDI0MzQiLCJlbWFpbCI6Ik1heW9tQGV4YW1wbGUuY29tIiwianRpIjoiMTRkNGM4MDgtOTViMy00N2E2LTk3YTMtOGFlMDA5MWRjNDY5Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjMzNTUwNDIsImV4cCI6MTc2MzM1NTk0MiwiaWF0IjoxNzYzMzU1MDQyLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.1V-Nw9QmQdRDlwd8lNvdXkMzw8HbmNoIJgSmGHzM33Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/conversations/onetoone/{otherUserId}",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"conversations",
+								"onetoone",
+								"{otherUserId}"
+							]
+						},
+						"description": "\"เริ่มแชท 1-ต่อ-1\" (หรือค้นหาแชทเดิม ถ้าเคยคุยกันแล้ว)"
+					},
+					"response": [
+						{
+							"id": "49218394-b1d8e913-6f55-4b8f-8d94-71697716b947",
+							"name": "Create First Message in a Conversation",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{websocketURL}}/api/conversations/onetoone/3c31e1f5-d770-4110-bf13-61fafd488d89",
+									"host": [
+										"{{websocketURL}}"
+									],
+									"path": [
+										"api",
+										"conversations",
+										"onetoone",
+										"3c31e1f5-d770-4110-bf13-61fafd488d89"
+									]
+								}
+							},
+							"_postman_previewlanguage": "",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"responseTime": null,
+							"body": ""
+						}
+					]
+				}
+			],
+			"id": "49218394-bb67e8a7-af3c-41a9-a8aa-0fff6121ae5c"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Users",
+					"id": "49218394-4dfb6229-d024-4590-bc71-7357b9697b7e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiY2NiNjYzZmEtNTQyNi00ZDQ3LTg2YzMtNDI3NjgxOTMwZjI2Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjM0NTI5MzIsImV4cCI6MTc2MzQ1MzgzMiwiaWF0IjoxNzYzNDUyOTMyLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.Vmis2Vf8R0RuSQDw1-10AwhocjKAUJA-9eji9O1i2pQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/users",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49218394-f1eee5fb-c7ef-4b95-95cf-0cf7d6cd7141"
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "Notifications",
+					"id": "49218394-e57e2d2a-6e62-49aa-8266-2ffefb5df758",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiMzg0YTJmYzUtZmY1My00Y2U0LTgyZTQtZWUwZTQ0OTFiZmM3Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjM1Mjk3MzUsImV4cCI6MTc2MzUzMDYzNSwiaWF0IjoxNzYzNTI5NzM1LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.U_Qva-opbL1SaIel_19XOeYRsPf7b9904Mc8Ere8FaM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/notifications?page=1&pageSize=5",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "pageSize",
+									"value": "5",
+									"type": "text"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as Read",
+					"id": "49218394-afab17ce-af4e-40a9-bfe9-851ed3515b0c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiZWVkYjNiM2EtMTg0OC00ZDc4LTgxMzEtMzI5MzgxMDIzNDkyIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjM1MjY0MjEsImV4cCI6MTc2MzUyNzMyMSwiaWF0IjoxNzYzNTI2NDIxLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.xJFTxtLz6yl76CNZ6WXPHndjRX0Sq8sj35gG9EYo-zI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/notifications/{notification_id}/read",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"{notification_id}",
+								"read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark all as Read",
+					"id": "49218394-9991f52a-a0de-41ea-810c-9fd702d1d8dc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiZWVkYjNiM2EtMTg0OC00ZDc4LTgxMzEtMzI5MzgxMDIzNDkyIiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjM1MjY0MjEsImV4cCI6MTc2MzUyNzMyMSwiaWF0IjoxNzYzNTI2NDIxLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.xJFTxtLz6yl76CNZ6WXPHndjRX0Sq8sj35gG9EYo-zI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/notifications/read-all",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"read-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notification",
+					"id": "49218394-bf1d4763-792e-4f76-b9d3-f5c74563f421",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzYzMxZTFmNS1kNzcwLTQxMTAtYmYxMy02MWZhZmQ0ODhkODkiLCJlbWFpbCI6IlBldGFucXVlQGV4YW1wbGUuY29tIiwianRpIjoiMzg0YTJmYzUtZmY1My00Y2U0LTgyZTQtZWUwZTQ0OTFiZmM3Iiwicm9sZSI6IlVzZXIiLCJuYmYiOjE3NjM1Mjk3MzUsImV4cCI6MTc2MzUzMDYzNSwiaWF0IjoxNzYzNTI5NzM1LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDAxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzAwMCJ9.U_Qva-opbL1SaIel_19XOeYRsPf7b9904Mc8Ere8FaM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{websocketURL}}/api/notifications/{notification_id}",
+							"host": [
+								"{{websocketURL}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"{notification_id}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "49218394-7320ba75-6835-4f6d-b738-fc182747bee4"
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "dfb6fd6e-0d8c-45df-8f60-ccb98317b9f6",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "907dca02-34f6-4275-b484-962755139d9f",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
