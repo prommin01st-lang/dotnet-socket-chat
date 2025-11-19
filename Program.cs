@@ -13,17 +13,23 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // --- 1. ตั้งค่า CORS ---
+var allowedOrigins = builder.Configuration.GetSection("CorsSettings:AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextApp", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") 
+        // ถ้าใน config ไม่มีค่า ให้ Default เป็น localhost:3000 เพื่อกัน Error
+        var origins = allowedOrigins != null && allowedOrigins.Length > 0 
+                      ? allowedOrigins 
+                      : new[] { "http://localhost:3000" };
+
+        policy.WithOrigins(origins) 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); 
     });
 });
-
 
 // --- 2. เชื่อมต่อ Database ---
 var connectionString = configuration.GetConnectionString("DefaultConnection");
