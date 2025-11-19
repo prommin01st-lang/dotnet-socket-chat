@@ -27,5 +27,9 @@ namespace ChatBackend.Services
         /// ค้นหา หรือ สร้าง ห้องแชท 1-1
         /// </summary>
         Task<ConversationDto> GetOrCreateOneToOneConversationAsync(string currentUserId, string otherUserId);
+
+        // Make Conversation As Read 
+        Task<bool> MarkConversationAsReadAsync(Guid conversationId, string currentUserId);
+
     }
 }

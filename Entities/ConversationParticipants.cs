@@ -36,5 +36,7 @@ namespace ChatBackend.Entities
 
         [ForeignKey("ConversationId")]
         public virtual Conversation Conversation { get; set; } = null!; 
+
+        public DateTime? LastReadTimestamp { get; set; }
     }
 }

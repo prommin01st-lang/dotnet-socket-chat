@@ -2,6 +2,7 @@ using ChatBackend.Data;
 using ChatBackend.Entities;
 using ChatBackend.Hubs;
 using ChatBackend.Models;
+using ChatBackend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,15 +20,18 @@ namespace ChatBackend.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHubContext<ChatHub> _hubContext;
+        private readonly INotificationService _notificationService;
 
         public MessagesController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            IHubContext<ChatHub> hubContext) 
+            IHubContext<ChatHub> hubContext,
+            INotificationService notificationService)       
         {
             _context = context;
             _userManager = userManager;
             _hubContext = hubContext;
+            _notificationService = notificationService;
         }
 
         [HttpPost]
@@ -78,21 +82,37 @@ namespace ChatBackend.Controllers
                 ConversationId = message.ConversationId
             };
 
-            // (!!! FIX !!!)
-            // (วิธีแก้ Bug ที่ "อีกคน" (ผู้รับ) ไม่ได้รับข้อความ)
-            
-            // 1. (ใหม่) ค้นหา "User ID" ของ "ทุกคน" (All) ที่อยู่ในห้องแชทนี้
             var participantUserIds = await _context.ConversationParticipants
                 .Where(p => p.ConversationId == message.ConversationId)
                 .Select(p => p.ApplicationUserId)
                 .ToListAsync();
 
-            // 2. (ใหม่) "Push" (ผลัก) ข้อความนี้ ไปยัง "User ID" เหล่านั้น "โดยตรง"
             await _hubContext.Clients
                 .Users(participantUserIds) 
                 .SendAsync("ReceiveMessage", messageDto); 
             
-            // (วิธีเก่า (ที่ Bug): .Group(message.ConversationId.ToString()))
+            var otherParticipantIds = participantUserIds
+                .Where(id => id != currentUserId)
+                .ToList();
+
+            foreach (var participantId in otherParticipantIds)
+            {
+                string notificationTitle = $"New message from {sender.FirstName} {sender.LastName}";
+                string? notiMessage = !string.IsNullOrEmpty(message.Content) 
+                    ? (message.Content.Length > 50 ? message.Content.Substring(0, 47) + "..." : message.Content)
+                    : "Sent an attachment";
+                
+                await _notificationService.CreateNotificationAsync(
+                    participantId,
+                    notificationTitle,
+                    notiMessage,
+                    NotificationType.Message,
+                    relatedEntityId: message.ConversationId.ToString(),
+                    relatedEntityType: "Conversation"
+                );
+                
+            }
+
 
             return CreatedAtAction(nameof(SendMessage), new { id = message.Id }, messageDto);
         }

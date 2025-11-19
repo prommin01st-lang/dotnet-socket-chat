@@ -56,27 +56,21 @@ namespace ChatBackend.Controllers
         public async Task<IActionResult> GetMessages(Guid id)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (currentUserId == null)
-            {
-                return Unauthorized();
-            }
+            if (currentUserId == null) return Unauthorized();
 
             try
             {
-                // (4) Service จะจัดการเรื่องการดึงข้อมูล และ ตรวจสอบสิทธิ์ (Authorization)
                 var messages = await _conversationService.GetMessagesAsync(id, currentUserId);
+                if (messages == null) return Forbid();
 
-                if (messages == null)
-                {
-                    // ถ้า Service คืนค่า null, แปลว่า User ไม่มีสิทธิ์ในห้องแชทนี้
-                    return Forbid("You are not authorized to view messages in this conversation.");
-                }
+                // (Optional) เมื่อดึงข้อความ = อ่านแล้ว
+                // await _conversationService.MarkConversationAsReadAsync(id, currentUserId);
 
                 return Ok(messages);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting messages for conversation {ConversationId}", id);
+                _logger.LogError(ex, "Error getting messages");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -99,11 +93,7 @@ namespace ChatBackend.Controllers
 
             try
             {
-                // (5) Service จะจัดการ Logic ที่ซับซ้อน (ค้นหา หรือ สร้างใหม่)
                 var conversationDto = await _conversationService.GetOrCreateOneToOneConversationAsync(currentUserId, otherUserId);
-                
-                // (Optional) เราสามารถคืนค่า 201 Created ถ้ามีการสร้างใหม่
-                // แต่เพื่อความง่าย, คืน 200 OK ทั้งสองกรณี
                 return Ok(conversationDto);
             }
             catch (KeyNotFoundException ex)
@@ -113,6 +103,26 @@ namespace ChatBackend.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating conversation between {UserId1} and {UserId2}", currentUserId, otherUserId);
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("{id}/read")]
+        public async Task<IActionResult> MarkAsRead(Guid id)
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (currentUserId == null) return Unauthorized();
+
+            try 
+            {
+                var success = await _conversationService.MarkConversationAsReadAsync(id, currentUserId);
+                if (!success) return NotFound("Conversation not found or user not participant.");
+                
+                return Ok(new { message = "Marked as read" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error marking as read");
                 return StatusCode(500, "Internal server error");
             }
         }

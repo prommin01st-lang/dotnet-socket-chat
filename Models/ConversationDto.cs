@@ -33,5 +33,9 @@ namespace ChatBackend.Models
         /// ข้อความล่าสุด (สำหรับแสดง Preview)
         /// </summary>
         public MessageDto? LastMessage { get; set; }
+        
+        // ข้อความที่ยังไม่ได้อ่านในห้องนี้
+        public int UnreadCount { get; set; }
+
     }
 }

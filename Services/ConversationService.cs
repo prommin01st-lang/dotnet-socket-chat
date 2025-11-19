@@ -127,14 +127,32 @@ namespace ChatBackend.Services
             return MapToConversationDto(createdConvo, currentUserId); 
         }
 
+        public async Task<bool> MarkConversationAsReadAsync(Guid conversationId, string currentUserId)
+        {   
+            var participant = await _context.ConversationParticipants
+                .FirstOrDefaultAsync(cp => cp.ConversationId == conversationId && cp.ApplicationUserId == currentUserId);
+            
+            if (participant == null) return false;
+
+            participant.LastReadTimestamp = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         private ConversationDto MapToConversationDto(Conversation convo, string currentUserId)
         {
+            var myParticipation = convo.Participants
+                .FirstOrDefault(p => p.ApplicationUserId == currentUserId);
+            
+            var lastRead = myParticipation?.LastReadTimestamp ?? DateTime.MinValue;
+            var unreadCount = convo.Messages.Count(m => m.Timestamp > lastRead);
+
             var dto = new ConversationDto
             {
                 Id = convo.Id,
                 Type = convo.Type,
                 CreatedAt = convo.CreatedAt,
-                
+                UnreadCount = unreadCount,
                 Participants = convo.Participants
                     .Where(p => p.ApplicationUser != null) 
                     .Select(p => new ParticipantDto
@@ -163,9 +181,6 @@ namespace ChatBackend.Services
                     SenderFirstName = sender?.FirstName ?? "Unknown",
                     SenderLastName = sender?.LastName ?? "User",
                     SenderProfilePictureUrl = sender?.ProfilePictureUrl,
-                    
-                    // (!!! FIX !!!)
-                    // (เพิ่มค่านี้เข้าไปใน DTO)
                     ConversationId = lastMessage.ConversationId
                 };
             }

@@ -17,6 +17,7 @@ namespace ChatBackend.Data
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<ConversationParticipant> ConversationParticipants { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -64,6 +65,12 @@ namespace ChatBackend.Data
                 .WithMany(c => c.Messages)
                 .HasForeignKey(m => m.ConversationId)
                 .OnDelete(DeleteBehavior.Cascade); // ถ้าลบห้องแชท ให้ลบข้อความทั้งหมดด้วย
+
+            builder.Entity<Notification>()
+                .HasOne(n => n.User)
+                .WithMany() // User ไม่จำเป็นต้องมี List<Notification> ก็ได้ (One-to-Many แบบทางเดียว) หรือจะเพิ่มก็ได้
+                .HasForeignKey(n => n.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
