@@ -1,0 +1,25 @@
+meta {
+  name: Login (Admin)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/accounts/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@admin.com",
+    "password": "AdminPassword123!"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("token", res.body.accessToken);
+    bru.setEnvVar("refreshToken", res.body.refreshToken);
+  }
+}

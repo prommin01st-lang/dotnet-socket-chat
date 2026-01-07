@@ -26,15 +26,30 @@ namespace ChatBackend.Data
                 }
             }
 
-            // (Optional) เราสามารถสร้าง User Admin เริ่มต้นได้ที่นี่
-            // var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            // var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
-            // if (adminUser == null)
-            // {
-            //     var newAdmin = new ApplicationUser { ... };
-            //     await userManager.CreateAsync(newAdmin, "AdminPassword123!");
-            //     await userManager.AddToRoleAsync(newAdmin, "Admin");
-            // }
+            // สร้าง Admin User เริ่มต้น
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var adminEmail = "admin@admin.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+            
+            if (adminUser == null)
+            {
+                var newAdmin = new ApplicationUser 
+                { 
+                    UserName = adminEmail, // UserName required
+                    Email = adminEmail,
+                    FirstName = "Admin",
+                    LastName = "System",
+                    EmailConfirmed = true 
+                };
+                
+                // create user with password
+                var result = await userManager.CreateAsync(newAdmin, "AdminPassword123!");
+                
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newAdmin, "Admin");
+                }
+            }
         }
     }
 }

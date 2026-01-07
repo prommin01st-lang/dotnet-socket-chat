@@ -1,0 +1,26 @@
+meta {
+  name: Get Current User
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/accounts/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("userId", res.body.id);
+    bru.setEnvVar("userEmail", res.body.email);
+    bru.setEnvVar("firstName", res.body.firstName);
+    bru.setEnvVar("lastName", res.body.lastName);
+    bru.setEnvVar("profilePictureUrl", res.body.profilePictureUrl);
+    bru.setEnvVar("roles", res.body.roles[0]);
+  }
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Create One-to-One Chat
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/conversations/onetoone/{{otherUserId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  otherUserId: 
+}

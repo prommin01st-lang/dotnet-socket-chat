@@ -1,134 +1,121 @@
-# .NET 9 API Base Template (JWT + SignalR + BFF)
+# .NET 9 API Base Template (PostgreSQL + Optimizations)
 
-นี่คือโปรเจกต์ **Base API (Backend)** ที่สร้างด้วย **.NET 9** ซึ่งเป็น Template เริ่มต้นที่ครบพร้อมสำหรับระบบแชท, Auth, JWT, SignalR และ BFF
+นี่คือโปรเจกต์ **Base API (Backend)** ที่สร้างด้วย **.NET 9** ซึ่งเป็น Template เริ่มต้นที่ครบพร้อมสำหรับระบบแชท, Auth, JWT, SignalR และ BFF โดยได้รับการปรับปรุงประสิทธิภาพและเปลี่ยนมาใช้ PostgreSQL
 
 ---
 
 ## 🧱 เทคโนโลยีหลัก (Tech Stack)
 
 - **Backend:** .NET 9 / C#
-- **Authentication:** ASP.NET Core Identity
-- **Authorization:** JWT (Access Tokens + Refresh Tokens)
+- **Database:** PostgreSQL (ใช้ `Npgsql`)
+- **ORM:** Entity Framework Core 9 (Snake Case Naming)
+- **Authentication:** ASP.NET Core Identity + JWT (Access/Refresh Tokens)
 - **Real-time:** SignalR (WebSockets)
-- **Database:** Entity Framework Core 9 (SQL Server)
-- **Architecture:** Service Layer  
-  *(Controllers → Services → DbContext)*
+- **Architecture:** Service Layer *(Controllers → Services → DbContext)*
 
 ---
 
 ## ✨ ฟีเจอร์ที่มีให้ (Features)
 
-### 🔐 ระบบ Auth (BFF Ready)
+### 🚀 Optimization & Production Ready
+- **Health Checks:** `/health` สำหรับตรวจสอบสถานะ Server
+- **Rate Limiting:** จำกัดการเรียก API (ป้องกัน Spam/DDoS) Config ได้ใน `appsettings.json`
+- **Response Compression:** บีบอัดข้อมูล (Gzip) เพื่อลดขนาด Response
+- **Global Exception Handling:** จัดการ Error ทั้งหมดในที่เดียว (Return JSON มาตรฐาน)
 
-- `POST /register`
-- `POST /login`
-- `POST /refresh` – ใช้กับ HttpOnly Cookies
-- `POST /revoke` – สำหรับ Logout
-- `GET /me` – ดึงข้อมูลผู้ใช้ที่ล็อกอิน
+### 🔐 Authentication System
+- **Registers/Login:** พร้อม JWT Token
+- **Refresh Token:** รองรับการต่ออายุ Token แบบปลอดภัย
+- **Revoke Token:** Logout และยกเลิก Session
+- **Configurable Expiry:** ตั้งเวลาหมดอายุ Token ได้ใน `appsettings.json`
 
----
-
-### 👤 Role Management
-
-- มี **Seed Data** สร้าง Role:
-  - `Admin`
-  - `User`
-
----
-
-### ⚡ Real-time (SignalR)
-
-- `Hubs/ChatHub.cs` ใช้ `[Authorize]`
-- รองรับ Logic “Push” ไปยัง User ID โดยตรง (ผ่าน MessagesController)
+### 💬 Chat System (Real-time)
+- **One-to-One Chat:** สร้างห้องแชทส่วนตัวอัตโนมัติ
+- **History:** เก็บและดึงประวัติข้อความ
+- **SignalR Push:** ส่งข้อความหา User แบบ Real-time ทันที
 
 ---
 
-### 💬 Chat System (API)
+## ⚙ Configuration (`appsettings.json`)
 
-- `Controllers/ConversationsController.cs`
-  - ดึงรายชื่อห้องแชท
-  - ดึงข้อความในห้องแชท
-  - สร้างห้อง 1-1 อัตโนมัติ
-- `Controllers/MessagesController.cs`
-  - ส่งข้อความ
-  - Trigger SignalR เพื่อ Push ให้ Client ที่เกี่ยวข้อง
+โปรเจกต์นี้รองรับการตั้งค่าผ่านไฟล์ JSON ได้โดยไม่ต้องแก้โค้ด:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=ChatDb;Username=postgres;Password=YOUR_PASSWORD"
+  },
+  "JWT": {
+    "Key": "YOUR_SUPER_SECRET_KEY_MUST_BE_LONG",
+    "Issuer": "http://localhost:5212",
+    "Audience": "http://localhost:3000",
+    "ExpireDays": 7,              // อายุ Refresh Token (วัน)
+    "AccessTokenExpireMinutes": 15 // อายุ Access Token (นาที)
+  },
+  "RateLimiting": {
+    "PermitLimit": 100,    // จำนวน Request สูงสุด
+    "WindowMinutes": 1,    // ต่อเวลา (นาที)
+    "QueueLimit": 5        // คิวที่รอได้เมื่อเกิน Limit
+  }
+}
+```
 
 ---
 
-## ⚙ Configuration
+## 🗺️ เส้นทาง API (Endpoints)
 
-- มี `.gitignore` เพื่อป้องกันไม่ให้ `appsettings.Development.json` หลุดขึ้น Git
-- Template สำหรับไฟล์ตั้งค่า:
-  - `appsettings.Template.json`
+### 🛠️ Infrastructure
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health` | ตรวจสอบสถานะ Server (Healthy) |
+
+### 👤 Authentication (`/api/accounts`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/register` | สมัครสมาชิก |
+| `POST` | `/login` | เข้าสู่ระบบ |
+| `POST` | `/refresh` | ต่ออายุ Token |
+| `POST` | `/revoke` | ล้าง Token (Logout) |
+| `GET` | `/me` | ดูข้อมูลส่วนตัว |
+
+### 💬 Chat & Users
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/conversations/onetoone/{userId}` | เริ่มแชทกับ User อื่น |
+| `POST` | `/api/messages` | ส่งข้อความ |
+| `GET` | `/api/conversations` | ดูรายการห้องแชท |
+| `GET` | `/api/users` | ค้นหา User ทั้งหมด |
 
 ---
 
-## 🗺️ เส้นทาง API (Available Endpoints)
+## 📦 API Testing (Bruno)
 
-### Authentication (`/api/accounts`)
-
-| Method | Endpoint | Protection | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/register` | Public | ลงทะเบียน User ใหม่ |
-| `POST` | `/login` | Public | เข้าสู่ระบบ (รับ Tokens) |
-| `POST` | `/refresh` | Public | ขอ Token ใหม่ (ใช้ Refresh Token) |
-| `POST` | `/revoke` | `[Authorize]` | ยกเลิก Refresh Token (สำหรับ Logout) |
-| `GET` | `/me` | `[Authorize]` | ดึงข้อมูล User (ที่ Login อยู่) |
-
-### Chat System (`/api/`)
-
-| Method | Endpoint | Protection | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/conversations` | `[Authorize]` | ดึง "รายชื่อห้องแชท" (Sidebar) |
-| `GET` | `/conversations/{id}/messages` | `[Authorize]` | ดึง "ข้อความเก่า" ในห้องแชท |
-| `POST` | `/conversations/onetoone/{userId}` | `[Authorize]` | "เริ่ม" แชท 1-1 (หรือค้นหาห้องเดิม) |
-| `POST` | `/messages` | `[Authorize]` | "ส่ง" ข้อความใหม่ (และ Push ผ่าน SignalR) |
-
-### WebSocket (`/hubs`)
-
-| Protocol | Endpoint | Protection | Description |
-| :--- | :--- | :--- | :--- |
-| `wss://` | `/hubs/chat` | `[Authorize]` (JWT) | เชื่อมต่อ Real-time (ต้องส่ง `access_token` ใน Query String) |
+โปรเจกต์นี้มาพร้อมกับ **Bruno Collection** 📂
+ให้เปิดโฟลเดอร์ `bruno/` ในโปรแกรม [Bruno](https://www.usebruno.com/) เพื่อทดสอบ API ได้ทันที
+- มีการตั้งค่า Environment (`Development`)
+- จัดการ Token ให้อัตโนมัติ (Login แล้วยิง Request อื่นต่อได้เลย)
 
 ---
 
 ## 🚀 วิธีเริ่มต้นใช้งาน (Get Started)
 
-### 1.  Clone Repository
+### 1. Requirements
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
-```bash
-git clone [YOUR_API_REPO_URL]
-cd [your-repo-name]
-```
-
-
-### 2. สร้างไฟล์ตั้งค่า (สำคัญมาก)
-- คัดลอกไฟล์ appsettings.Template.json
-
-- สร้างไฟล์ใหม่ชื่อ appsettings.Development.json
-
-- วางเนื้อหาจาก Template ลงไป
-
-### 3. แก้ไข appsettings.Development.json
-- เปลี่ยน ConnectionStrings:DefaultConnection ให้เป็น SQL Server ของคุณ
-    - (แนะนำ) เปลี่ยน JWT:Key เป็นค่า Secret ใหม่ (สุ่มใหม่)
-- แก้ไข JWT:Issuer (API URL) และ JWT:Audience (Frontend URL)
-
-### 4. สร้าง Database
-(ตรวจสอบว่า Connection String ถูกต้องแล้ว)
+### 2. Setup Database
+แก้ไข `appsettings.json` ให้ตรงกับ PostgreSQL ของคุณ แล้วรันคำสั่ง:
 
 ```bash
 dotnet ef database update
 ```
 
-### 5. รันโปรเจกต์
+### 3. Run Project
 
 ```bash
 dotnet run
 ```
 
-(API จะรันที่ (เช่น) http://localhost:5212)
+---
 
-```bash
-dotnet run
-```
+*Updated: 2026-01-07*

@@ -1,18 +1,27 @@
+using ChatBackend.Entities;
+using ChatBackend.Helpers;
 using ChatBackend.Models;
-using System;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ChatBackend.Services
 {
-    // (1) (ใหม่) สร้าง Interface สำหรับ User Management
     public interface IUserService
     {
-        Task<IEnumerable<ParticipantDto>> GetAllUsersAsync(string currentUserId);
+        Task<PagedList<ParticipantDto>> GetUsersAsync(PaginationParams paginationParams, string? currentUserId);
+        Task<ApplicationUser?> GetUserByIdAsync(string userId);
+        Task<ApplicationUser?> UpdateUserAsync(string userId, UserUpdateDto userUpdateDto, string currentUserId, bool isAdmin);
+        Task<bool> SoftDeleteUserAsync(string userId);
+        Task<bool> HardDeleteUserAsync(string userId);
+        Task<string> UploadProfilePictureAsync(string userId, IFormFile file);
+        
+        // Role Management
+        Task<IList<string>> GetUserRolesAsync(string userId);
+        Task<bool> AssignRoleAsync(string userId, string roleName);
+        Task<bool> RemoveRoleAsync(string userId, string roleName);
 
-        // (ในอนาคต, เราสามารถเพิ่ม Method สำหรับ "User Management" ที่นี่)
-        // Task<UserDto> GetUserByIdAsync(string userId);
-        // Task<bool> UpdateUserRolesAsync(string userId, List<string> newRoles);
-        // Task<bool> DeactivateUserAsync(string userId);
+        // Backward compatibility
+        Task<IEnumerable<ParticipantDto>> GetAllUsersAsync(string currentUserId);
     }
 }
