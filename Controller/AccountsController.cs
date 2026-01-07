@@ -41,7 +41,7 @@ namespace ChatBackend.Controllers
             var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
             if (existingUser != null)
             {
-                return BadRequest("Email address is already in use.");
+                return BadRequest(new { message = "Email address is already in use." });
             }
 
             // สร้าง User object
@@ -68,7 +68,7 @@ namespace ChatBackend.Controllers
 
             // --- สร้าง Token (เหมือนตอน Login) ---
             var authResponse = await GenerateAuthResponse(user);
-            return Ok(authResponse);
+            return Ok(new { authResponse });
         }
 
         // --- 2. Endpoint: [POST] api/accounts/login ---
@@ -81,19 +81,19 @@ namespace ChatBackend.Controllers
             if (user == null || !user.IsActive)
             {
                 // ไม่ควรบอกว่า "Password ผิด" หรือ "User ไม่มี" เพื่อความปลอดภัย
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized(new { message = "Invalid email or password." });
             }
 
             // ตรวจสอบ Password
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
             if (!result)
             {
-                return Unauthorized("Invalid email or password.");
+                return Unauthorized(new { message = "Invalid email or password." });
             }
 
             // --- สร้าง Token ---
             var authResponse = await GenerateAuthResponse(user);
-            return Ok(authResponse);
+            return Ok(new { authResponse });
         }
 
         [HttpPost("refresh")]
@@ -113,7 +113,7 @@ namespace ChatBackend.Controllers
             if (string.IsNullOrEmpty(userId))
             {
                 // ถ้า Token ไม่มี 'sub' (User ID) ก็ถือว่า Token ผิด
-                return BadRequest("Invalid token.");
+                return BadRequest(new { message = "Invalid token." });
             }
             // --- (จบการแก้ไข) ---
 
@@ -126,12 +126,12 @@ namespace ChatBackend.Controllers
                 user.RefreshToken != refreshToken ||
                 user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
-                return BadRequest("Invalid refresh token or token expired.");
+                return BadRequest(new { message = "Invalid refresh token or token expired." });
             }
 
             // 4. (สำเร็จ) สร้าง Token ชุดใหม่ (เหมือนตอน Login)
             var authResponse = await GenerateAuthResponse(user);
-            return Ok(authResponse);
+            return Ok(new { authResponse });
         }
         // --- 4. Endpoint: [POST] api/accounts/revoke ---
         // (*** นี่คือส่วนที่เพิ่มเข้ามา ***)
@@ -145,7 +145,7 @@ namespace ChatBackend.Controllers
 
             if (user == null)
             {
-                return BadRequest("Invalid user.");
+                return BadRequest(new { message = "Invalid user." });
             }
 
             // 5. "ยกเลิก" Token โดยการลบออกจาก DB
@@ -153,7 +153,7 @@ namespace ChatBackend.Controllers
             user.RefreshTokenExpiryTime = null;
             await _userManager.UpdateAsync(user);
 
-            return Ok(new { Message = "Token revoked successfully." });
+            return Ok(new { message = "Token revoked successfully." });
         }
 
 
@@ -183,7 +183,7 @@ namespace ChatBackend.Controllers
 
             if (user == null)
             {
-                return NotFound("User not found.");
+                return NotFound(new { message = "User not found." });
             }
 
             // ดึง Role มาใส่ใน DTOฝ

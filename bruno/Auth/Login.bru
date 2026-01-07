@@ -19,7 +19,7 @@ body:json {
 
 script:post-response {
   if (res.status === 200) {
-    bru.setEnvVar("token", res.body.accessToken);
-    bru.setEnvVar("refreshToken", res.body.refreshToken);
+    bru.setEnvVar("token", res.body.authResponse.accessToken);
+    bru.setEnvVar("refreshToken", res.body.authResponse.refreshToken);
   }
 }
