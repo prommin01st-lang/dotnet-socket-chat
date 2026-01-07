@@ -37,8 +37,21 @@ namespace ChatBackend.Controllers
         public async Task<IActionResult> GetUserById(string id)
         {
             var user = await _userService.GetUserByIdAsync(id);
-            if (user == null) return NotFound();
-            return Ok(user);
+            if (user == null) return NotFound(new { message = "User not found." });
+
+            var roles = await _userService.GetUserRolesAsync(user.Id);
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName ?? "Unknown",
+                LastName = user.LastName ?? "User",
+                ProfilePictureUrl = user.ProfilePictureUrl,
+                Roles = roles
+            };
+
+            return Ok(userDto);
         }
 
         [HttpPut("{id}")]

@@ -92,6 +92,18 @@ builder.Services.AddAuthentication(options =>
                 context.Token = accessToken;
             }
             return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            // Skip if response already started
+            if (context.Response.HasStarted) return Task.CompletedTask;
+
+            context.HandleResponse(); // Suppress default behavior
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+            
+            var result = System.Text.Json.JsonSerializer.Serialize(new { message = "You are not authorized." });
+            return context.Response.WriteAsync(result);
         }
     };
 });
@@ -110,6 +122,28 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFileStorageService, CloudflareR2StorageService>();
 
 builder.Services.AddControllers();
+
+// Custom Validation Response
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value != null && e.Value.Errors.Count > 0)
+            .Select(e => new 
+            { 
+               Field = e.Key, 
+               Error = e.Value!.Errors.First().ErrorMessage 
+            })
+            .ToList();
+
+        return new Microsoft.AspNetCore.Mvc.BadRequestObjectResult(new
+        {
+            message = "Validation failed",
+            errors = errors
+        });
+    };
+});
 builder.Services.AddEndpointsApiExplorer();
 
 // --- 8. Optimization Services (New) ---
