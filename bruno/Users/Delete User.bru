@@ -1,0 +1,19 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/api/users/{{userId}}?hardDelete=false
+  body: none
+  auth: bearer
+}
+
+params:query {
+  hardDelete: false
+}
+
+auth:bearer {
+  token: {{token}}
+}

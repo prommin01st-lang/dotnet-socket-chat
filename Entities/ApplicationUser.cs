@@ -22,6 +22,11 @@ namespace ChatBackend.Entities
 
         public bool IsActive { get; set; } = true;
 
+        /// <summary>
+        /// Soft Delete Flag
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
+
         public string? RefreshToken { get; set; }
         
         /// <summary>

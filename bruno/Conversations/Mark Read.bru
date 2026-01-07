@@ -1,0 +1,19 @@
+meta {
+  name: Mark Conversation as Read
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/conversations/{{conversationId}}/read
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  conversationId: 
+}

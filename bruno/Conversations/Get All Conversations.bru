@@ -1,0 +1,15 @@
+meta {
+  name: Get All Conversations
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/conversations
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

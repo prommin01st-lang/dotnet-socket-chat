@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models; // (สำหรับ OpenApiInfo)
 using System.Text;
+using ChatBackend.Infrastructure; // New
+using ChatBackend.Services.FileStorage; // New
+using Microsoft.AspNetCore.RateLimiting; // New
+using System.Threading.RateLimiting; // New
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -34,7 +38,8 @@ builder.Services.AddCors(options =>
 // --- 2. เชื่อมต่อ Database ---
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+           .UseSnakeCaseNamingConvention());
 
 
 // --- 3. ตั้งค่า Identity (User/Role Management) ---
@@ -102,9 +107,31 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IConversationService, ConversationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFileStorageService, CloudflareR2StorageService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// --- 8. Optimization Services (New) ---
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+builder.Services.AddHealthChecks();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("fixed", limiterOptions =>
+    {
+        var rateLimitConfig = builder.Configuration.GetSection("RateLimiting");
+        limiterOptions.PermitLimit = rateLimitConfig.GetValue<int>("PermitLimit", 100);
+        limiterOptions.Window = TimeSpan.FromMinutes(rateLimitConfig.GetValue<double>("WindowMinutes", 1));
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = rateLimitConfig.GetValue<int>("QueueLimit", 5);
+    });
+});
 
 // --- 8. ตั้งค่า Swagger ให้รู้จัก JWT ---
 builder.Services.AddSwaggerGen(c =>
@@ -171,9 +198,11 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 
 // --- ใช้งาน Middleware (ลำดับสำคัญมาก) ---
-app.UseRouting(); 
-
-app.UseCors("AllowNextApp"); 
+app.UseExceptionHandler(); // New (Must be first)
+app.UseRouting();
+app.UseRateLimiter(); // New
+app.UseCors("AllowNextApp");
+app.UseResponseCompression(); // New
 
 app.UseAuthentication(); 
 app.UseAuthorization(); 
@@ -182,5 +211,8 @@ app.MapControllers();
 
 // Map SignalR Hub
 app.MapHub<ChatHub>("/hubs/chat");
+
+// Map Health Check (New)
+app.MapHealthChecks("/health");
 
 app.Run();

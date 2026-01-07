@@ -17,16 +17,19 @@ namespace ChatBackend.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
 
         // Inject สิ่งที่เราต้องใช้
         public AccountsController(
             UserManager<ApplicationUser> userManager,
             ITokenService tokenService,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         // --- 1. Endpoint: [POST] api/accounts/register ---
@@ -202,7 +205,8 @@ namespace ChatBackend.Controllers
 
             // 3. บันทึก Refresh Token ลง Database
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // ตั้งหมดอายุ 7 วัน
+            var expireDays = _configuration.GetValue<int>("JWT:ExpireDays", 7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(expireDays);
             await _userManager.UpdateAsync(user);
 
             // 4. ดึง Roles

@@ -61,7 +61,7 @@ namespace ChatBackend.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(15), // ตั้งหมดอายุ (เช่น 15 นาที)
+                Expires = DateTime.UtcNow.AddMinutes(_config.GetValue<double>("JWT:AccessTokenExpireMinutes", 15)),
                 Issuer = _issuer,
                 Audience = _audience,
                 SigningCredentials = creds

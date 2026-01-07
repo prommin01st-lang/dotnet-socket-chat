@@ -1,0 +1,19 @@
+meta {
+  name: Delete Notification
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/api/notifications/{{notificationId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  notificationId: 
+}

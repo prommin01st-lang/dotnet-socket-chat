@@ -1,0 +1,21 @@
+meta {
+  name: Get All Users
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/users?pageNumber=1&pageSize=10&searchTerm=
+  body: none
+  auth: bearer
+}
+
+params:query {
+  pageNumber: 1
+  pageSize: 10
+  searchTerm: 
+}
+
+auth:bearer {
+  token: {{token}}
+}

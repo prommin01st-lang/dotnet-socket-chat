@@ -1,0 +1,10 @@
+{
+    "version": "1",
+    "name": "Dotnet Socket Chat API",
+    "type": "collection",
+    "ignore": [
+        ".git",
+        "node_modules",
+        ".env"
+    ]
+}
