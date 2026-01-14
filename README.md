@@ -42,20 +42,51 @@
 
 ```json
 {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "Kestrel": {
+    "Endpoints": {
+      "Http": {
+        "Url": "http://localhost:5858"
+      }
+    }
+  },
+  "AllowedHosts": "*",
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=ChatDb;Username=postgres;Password=YOUR_PASSWORD"
+    "DefaultConnection": "Host=xxxx;Database=xxxxx;Username=xxxxx;Password=xxxxxx"
+  },
+  "CorsSettings": {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "https://mydomain.com"
+    ]
   },
   "JWT": {
-    "Key": "YOUR_SUPER_SECRET_KEY_MUST_BE_LONG",
-    "Issuer": "http://localhost:5212",
+    "Key": "SuperSecretKey@345SuperSecretKey@345",
+    "Issuer": "http://localhost:5858",
     "Audience": "http://localhost:3000",
-    "ExpireDays": 7,              // อายุ Refresh Token (วัน)
-    "AccessTokenExpireMinutes": 15 // อายุ Access Token (นาที)
+    "ExpireDays": 7,
+    "AccessTokenExpireMinutes": 15
   },
   "RateLimiting": {
-    "PermitLimit": 100,    // จำนวน Request สูงสุด
-    "WindowMinutes": 1,    // ต่อเวลา (นาที)
-    "QueueLimit": 5        // คิวที่รอได้เมื่อเกิน Limit
+    "PermitLimit": 100,
+    "WindowMinutes": 1,
+    "QueueLimit": 5
+  },
+  "CloudflareR2": {
+    "BucketName": "YOUR_BUCKET_NAME",
+    "ServiceUrl": "https://YOUR_ACCOUNT_ID.r2.cloudflarestorage.com",
+    "AccessKey": "YOUR_ACCESS_KEY",
+    "SecretKey": "YOUR_SECRET_KEY",
+    "PublicUrl": "https://YOUR_PUBLIC_URL_OR_CUSTOM_DOMAIN"
+  },
+  "FileStorage": {
+    "Provider": "Local",
+    "LocalPath": "uploads"
   }
 }
 ```
